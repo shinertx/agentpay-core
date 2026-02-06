@@ -25,6 +25,16 @@ npm run dev
 # http://localhost:8787/healthz
 ```
 
+## Canonical USDC IDs
+
+AgentPay pins **Circle-native USDC** identifiers to prevent lookalike tokens:
+
+- Base mainnet USDC: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
+- Base Sepolia USDC: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`
+- Solana USDC mint: `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`
+
+Source: Circle contract list.
+
 ## Roadmap
 - Signed tokens (Ed25519) + receipt signatures
 - Onchain deposit verification (BaseScan/Coinbase RPC)
