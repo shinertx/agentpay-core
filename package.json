@@ -1,0 +1,28 @@
+{
+  "name": "agentpay-core",
+  "version": "0.0.1",
+  "private": false,
+  "description": "AgentPay Core: USDC (Base) pay-per-call rail for OpenClaw skills (quote/authorize/usage/receipt + idempotency).",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "lint": "eslint .",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.9.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}
