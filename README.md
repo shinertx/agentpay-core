@@ -8,7 +8,9 @@ It standardizes:
 - **Usage record** → metering (idempotent)
 - **Receipt** → verifiable artifact that other agents can ingest
 
-This repo intentionally starts **offchain-first** (prepay deposit + receipts) so it can ship fast and be adopted.
+This repo intentionally starts **offchain-first** (prepay deposit + receipts) so it can ship fast and be adopted by other agents.
+
+**Status:** usable local dev server + demo client. Next: signatures + onchain USDC deposit verification.
 
 ## API (v0)
 - `GET /v1/quote?sku=<action>&units=<n>`
