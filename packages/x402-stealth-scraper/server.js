@@ -132,23 +132,54 @@ async function executeStealthExtraction(url) {
   }
 }
 
-// 3. x402 Main Extraction Route
+// In-Memory IP Rate Tracker for 50 Free Daily Requests per IP
+const freeUsageMap = new Map();
+const FREE_TIER_LIMIT = 50;
+
+function checkFreeQuota(ip) {
+  const now = Date.now();
+  const user = freeUsageMap.get(ip) || { count: 0, resetAt: now + 24 * 3600 * 1000 };
+
+  if (now > user.resetAt) {
+    user.count = 0;
+    user.resetAt = now + 24 * 3600 * 1000;
+  }
+
+  if (user.count < FREE_TIER_LIMIT) {
+    user.count++;
+    freeUsageMap.set(ip, user);
+    return { allowed: true, remaining: FREE_TIER_LIMIT - user.count };
+  }
+
+  return { allowed: false, remaining: 0 };
+}
+
+// 3. x402 Main Extraction Route (with 50 Free Scrapes/Day Freemium)
 app.post('/v1/tools/stealth-scrape', async (req, res) => {
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || 'unknown';
   const paymentProof = req.headers['x-payment-proof'] || req.headers['authorization'];
   const { url, forceStealth } = req.body;
 
-  // Enforce standard x402 Challenge if unpaid
+  let isFreeTier = false;
+  let remainingFree = 0;
+
+  // Check if unauthenticated request qualifies for Free Tier
   if (!paymentProof) {
-    return res.status(402).json({
-      x402Version: 1,
-      scheme: "exact",
-      network: "base",
-      asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // Base Native USDC
-      payTo: RECIPIENT_ADDRESS,
-      amount: "10000", // 0.01 USDC (6 decimals)
-      description: "First-Principles Stealth Extractor: JavaScript + Anti-Bot Bypass with Bandwidth Shield",
-      instructions: "Submit signed transfer transaction hash in 'X-Payment-Proof' header."
-    });
+    const quota = checkFreeQuota(clientIp);
+    if (!quota.allowed) {
+      return res.status(402).json({
+        x402Version: 1,
+        scheme: "exact",
+        network: "base",
+        asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // Base Native USDC
+        payTo: RECIPIENT_ADDRESS,
+        amount: "10000", // 0.01 USDC (6 decimals)
+        description: "Free 50-Request Daily Quota Exhausted. Submit $0.01 Base USDC to continue.",
+        instructions: "Submit signed transfer transaction hash in 'X-Payment-Proof' header."
+      });
+    }
+    isFreeTier = true;
+    remainingFree = quota.remaining;
   }
 
   if (!url) {
@@ -185,8 +216,10 @@ app.post('/v1/tools/stealth-scrape', async (req, res) => {
       data: result.text,
       x402Receipt: {
         settled: true,
-        network: "base",
-        cost: "$0.01 USDC"
+        network: isFreeTier ? "free-tier-grant" : "base",
+        tier: isFreeTier ? "Free Developer Grant (50/day)" : "VIP Micro-Settlement",
+        cost: isFreeTier ? "$0.00 (Grant)" : "$0.01 USDC",
+        remainingFreeRequestsToday: isFreeTier ? remainingFree : "unlimited (paid)"
       }
     });
   } catch (err) {
