@@ -1,0 +1,17 @@
+{
+  "name": "@agentpay/eliza-plugin",
+  "version": "0.1.0",
+  "description": "ElizaOS plugin for AgentPay HTTP 402 micro-billing",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@elizaos/core": "^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

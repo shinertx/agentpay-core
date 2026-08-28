@@ -1,0 +1,21 @@
+{
+  "name": "@agentpay/waste-scanner",
+  "version": "0.1.0",
+  "description": "CLI tool to scan AI agent codebases and calculate wasted SaaS subscription costs",
+  "bin": {
+    "waste-scanner": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/index.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
