@@ -232,6 +232,27 @@ app.post('/v1/tools/stealth-scrape', async (req, res) => {
   }
 });
 
+// Root Discovery / Documentation Endpoint
+app.get('/', (req, res) => {
+  res.json({
+    service: "x402 Stealth Extractor API",
+    version: "2.0.0",
+    description: "Dual-tier stealth web scraper for AI agents. Bypasses Cloudflare & executes dynamic JavaScript.",
+    endpoints: {
+      scrape: {
+        method: "POST",
+        path: "/v1/tools/stealth-scrape",
+        body: { url: "https://example.com", forceStealth: false },
+        quota: "50 Free requests / day per IP",
+        paid_price: "$0.01 USDC on Base L2",
+        recipient: RECIPIENT_ADDRESS
+      },
+      health: { method: "GET", path: "/health" }
+    },
+    github: "https://github.com/shinertx/agentpay-core"
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: "healthy", engine: "first-principles-stealth-x402", version: "2.0.0" });
@@ -241,3 +262,4 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 First-Principles Stealth x402 Server listening on port ${PORT}`);
 });
+
